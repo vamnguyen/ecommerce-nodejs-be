@@ -1,9 +1,12 @@
+require("dotenv").config();
 const app = require("./src/app");
 
-const PORT = process.env.PORT || 3055;
+const {
+  app: { port },
+} = require("./src/configs/config.mongodb");
 
-const server = app.listen(PORT, () => {
-  console.log(`Web service running on port ${PORT}.`);
+const server = app.listen(port, () => {
+  console.log(`Web service running on port: ${[port]}.`);
 });
 
 process.on("SIGINT", () => {
