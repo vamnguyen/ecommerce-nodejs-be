@@ -2,9 +2,10 @@
 
 const shopModel = require("../models/shop.model");
 const bcrypt = require("bcrypt");
-const crypto = require("crypto");
+const crypto = require("node:crypto");
 const KeyTokenService = require("./keyToken.service");
 const { createTokenPair } = require("../auth/authUtils");
+const { getInfoData } = require("../utils");
 
 const RoleShop = {
   SHOP: "SHOP",
@@ -21,7 +22,7 @@ class AccessService {
       if (holderShop) {
         return {
           code: "xxxx",
-          message: "Shop already registered",
+          message: "Shop already registered!",
         };
       }
 
@@ -36,37 +37,37 @@ class AccessService {
 
       if (newShop) {
         // create privateKey, publicKey
-        const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
-          modulusLength: 4096,
-        });
+        const privateKey = crypto.randomBytes(64).toString("hex");
+        const publicKey = crypto.randomBytes(64).toString("hex");
 
         // save privateKey, publicKey to Collection KeyStore
-        console.log(privateKey, publicKey);
-
-        const publicKeyString = await KeyTokenService.createKeyToken({
+        const keyStore = await KeyTokenService.createKeyToken({
           userId: newShop._id,
           publicKey,
+          privateKey,
         });
 
-        if (!publicKeyString) {
+        if (!keyStore) {
           return {
-            code: "xxxx",
-            message: "Error: Create publicKey failed",
+            code: "xxx",
+            message: "keyStore failed!",
           };
         }
 
         // create token pair
         const tokens = await createTokenPair(
           { userId: newShop._id, email },
-          publicKeyString,
+          publicKey,
           privateKey
         );
-        console.log(`Created Token Success::`, tokens);
 
         return {
           code: 201,
           metadata: {
-            shop: newShop,
+            shop: getInfoData({
+              field: ["_id", "name", "email"],
+              object: newShop,
+            }),
             tokens,
           },
         };
@@ -74,8 +75,8 @@ class AccessService {
 
       // Create new shop failed
       return {
-        code: 200,
-        message: null,
+        code: 204,
+        metadata: null,
       };
     } catch (error) {
       return {

@@ -1,5 +1,5 @@
 "use strict";
-const mongoose = require("mongoose"); // Erase if already required
+const mongoose = require("mongoose");
 
 const DOCUMENT_NAME = "Shop";
 const COLLECTION_NAME = "Shops";
@@ -27,7 +27,7 @@ var shopSchema = new mongoose.Schema(
       default: "inactive",
     },
     verify: {
-      type: Schema.Types.Boolean,
+      type: mongoose.Schema.Types.Boolean,
       default: false,
     },
     roles: {

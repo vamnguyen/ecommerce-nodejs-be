@@ -20,8 +20,8 @@ const checkOverload = () => {
     // Example maximum number of connections based on the number of cores
     const maxConnections = numCores * 5;
 
-    console.log("The number of active connections is: ", numConnection);
-    console.log("Memory usage is: ", memoryUsage / 1024 / 1024, "MB");
+    console.log("The number of active connections is:", numConnection);
+    console.log("Memory usage is:", memoryUsage / 1024 / 1024, "MB");
 
     if (numConnection > maxConnections) {
       console.log("Overload connections detected");

@@ -1,26 +1,28 @@
+"use strict";
+
 const dev = {
   app: {
-    port: process.env.DEV_APP_PORT || 3052,
+    port: process.env.DEV_APP_PORT,
   },
   db: {
-    host: process.env.DEV_DB_HOST || "localhost",
-    port: process.env.DEV_DB_PORT || 27017,
-    name: process.env.DEV_DB_NAME || "shopDEV",
+    host: process.env.DEV_DB_HOST,
+    port: process.env.DEV_DB_PORT,
+    name: process.env.DEV_DB_NAME,
   },
 };
 
 const prod = {
   app: {
-    port: process.env.PROD_APP_PORT || 3055,
+    port: process.env.PROD_APP_PORT,
   },
   db: {
-    host: process.env.PROD_DB_HOST || "localhost",
-    port: process.env.PROD_DB_PORT || 27017,
-    name: process.env.PROD_DB_NAME || "shopPROD",
+    host: process.env.PROD_DB_HOST,
+    port: process.env.PROD_DB_PORT,
+    name: process.env.PROD_DB_NAME,
   },
 };
 
 const config = { dev, prod };
-const env = process.env.NODE_ENV || "dev";
+const env = process.env.NODE_ENV;
 
 module.exports = config[env]; // export config[dev] or config[prod]
