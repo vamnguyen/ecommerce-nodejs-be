@@ -19,52 +19,6 @@ const RoleShop = {
 };
 
 class AccessService {
-  static login = async ({ email, password, refreshToken }) => {
-    // validate email and password
-    if (!email || !password) {
-      throw new BadRequestError("Email and password are required!");
-    }
-
-    // check email existed?
-    const foundShop = await shopModel.findOne({ email });
-    if (!foundShop) {
-      throw new BadRequestError("Shop not registered!");
-    }
-
-    // compare password
-    const isMatch = await bcrypt.compare(password, foundShop.password);
-    if (!isMatch) {
-      throw new BadRequestError("Authentication failed!");
-    }
-
-    // create privateKey, publicKey
-    const privateKey = crypto.randomBytes(64).toString("hex");
-    const publicKey = crypto.randomBytes(64).toString("hex");
-
-    // create token pair
-    const tokens = await createTokenPair(
-      { userId: foundShop._id, email },
-      publicKey,
-      privateKey
-    );
-
-    // save privateKey, publicKey and refreshToken to Collection KeyStore
-    await KeyTokenService.createKeyToken({
-      userId: foundShop._id,
-      publicKey,
-      privateKey,
-      refreshToken: tokens.refreshToken,
-    });
-
-    return {
-      shop: getInfoData({
-        field: ["_id", "name", "email"],
-        object: foundShop,
-      }),
-      tokens,
-    };
-  };
-
   static signUp = async ({ name, email, password }) => {
     // check email existed?
     const holderShop = await shopModel.findOne({ email }).lean();
@@ -115,6 +69,57 @@ class AccessService {
 
     // Create new shop failed
     throw new InternalServerError("Create new shop failed!");
+  };
+
+  static login = async ({ email, password, refreshToken = null }) => {
+    // validate email and password
+    if (!email || !password) {
+      throw new BadRequestError("Email and password are required!");
+    }
+
+    // check email existed?
+    const foundShop = await shopModel.findOne({ email });
+    if (!foundShop) {
+      throw new BadRequestError("Shop not registered!");
+    }
+
+    // compare password
+    const isMatch = await bcrypt.compare(password, foundShop.password);
+    if (!isMatch) {
+      throw new BadRequestError("Authentication failed!");
+    }
+
+    // create privateKey, publicKey
+    const privateKey = crypto.randomBytes(64).toString("hex");
+    const publicKey = crypto.randomBytes(64).toString("hex");
+
+    // create token pair
+    const tokens = await createTokenPair(
+      { userId: foundShop._id, email },
+      publicKey,
+      privateKey
+    );
+
+    // save privateKey, publicKey and refreshToken to Collection KeyStore
+    await KeyTokenService.createKeyToken({
+      userId: foundShop._id,
+      publicKey,
+      privateKey,
+      refreshToken: tokens.refreshToken,
+    });
+
+    return {
+      shop: getInfoData({
+        field: ["_id", "name", "email"],
+        object: foundShop,
+      }),
+      tokens,
+    };
+  };
+
+  static logout = async (keyStore) => {
+    // delete Document in Collection KeyStore
+    return await KeyTokenService.removeTokenById(keyStore._id);
   };
 }
 
