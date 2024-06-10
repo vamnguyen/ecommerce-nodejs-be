@@ -1,6 +1,10 @@
 "use strict";
 
 const { Schema, model } = require("mongoose");
+const slugify = require("slugify");
+
+const DOCUMENT_NAME = "Product";
+const COLLECTION_NAME = "Products";
 
 const productSchema = new Schema(
   {
@@ -19,7 +23,6 @@ const productSchema = new Schema(
     product_shop: { type: Schema.Types.ObjectId, ref: "Shop", required: true },
     product_rating: {
       type: Number,
-      required: true,
       default: 4.5,
       min: [1, "Rating must be at least 1"],
       max: [5, "Rating must be at most 5"],
@@ -34,6 +37,15 @@ const productSchema = new Schema(
     collection: COLLECTION_NAME,
   }
 );
+
+// create index for search
+productSchema.index({ product_name: "text", product_description: "text" });
+
+// document middleware before .save() and .create() methods
+productSchema.pre("save", function (next) {
+  this.product_slug = slugify(this.product_name, { lower: true });
+  next();
+});
 
 // define product category clothing
 const clothingSchema = new Schema(
