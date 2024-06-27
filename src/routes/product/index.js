@@ -11,6 +11,10 @@ router.get(
   "/search/:keySearch",
   asyncHandler(productController.getListSearchProduct)
 );
+// Get all products
+router.get("", asyncHandler(productController.findAllProducts));
+// Get product by id
+router.get("/:product_id", asyncHandler(productController.findProductById));
 
 // middleware for authentication apply to all routes below
 router.use(authenticationV2);

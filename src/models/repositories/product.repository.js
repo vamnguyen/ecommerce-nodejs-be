@@ -3,6 +3,7 @@
 const { Types } = require("mongoose");
 const { product } = require("../product.model");
 const { BadRequestError } = require("../../core/error.response");
+const { getSelectData, unSelectData } = require("../../utils");
 
 const queryProduct = async ({ query, limit, skip }) => {
   return await product
@@ -65,10 +66,33 @@ const searchProducts = async ({ keySearch }) => {
   return result;
 };
 
+const findAllProducts = async ({ limit, sort, page, filter, select }) => {
+  const skip = (page - 1) * limit;
+  const sortBy = sort === "ctime" ? { _id: -1 } : { _id: 1 };
+  const products = await product
+    .find(filter)
+    .sort(sortBy)
+    .skip(skip)
+    .limit(limit)
+    .select(getSelectData(select))
+    .lean();
+
+  return products;
+};
+
+const findProduct = async ({ product_id, unselect }) => {
+  return await product
+    .findOne({ _id: product_id })
+    .select(unSelectData(unselect))
+    .lean();
+};
+
 module.exports = {
   findAllDraftForShop,
   findAllPublishForShop,
   publishProductByShop,
   unPublishProductByShop,
   searchProducts,
+  findAllProducts,
+  findProduct,
 };
