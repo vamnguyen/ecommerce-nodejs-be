@@ -113,6 +113,27 @@ class ProductController {
       metadata: await ProductService.findProductById(req.params.product_id),
     }).send(res);
   };
+
+  /**
+   * @description Update product
+   * @param { String } product_category
+   * @param { String } product_id
+   * @param { Product } product
+   * @returns { JSON }
+   */
+  updateProduct = async (req, res, next) => {
+    new SuccessResponse({
+      message: "Product updated successfully",
+      metadata: await ProductService.updateProduct(
+        req.body.product_category,
+        req.params.product_id,
+        {
+          ...req.body,
+          product_shop: req.user.userId,
+        }
+      ),
+    }).send(res);
+  };
 }
 
 module.exports = new ProductController();

@@ -13,8 +13,6 @@ router.get(
 );
 // Get all products
 router.get("", asyncHandler(productController.findAllProducts));
-// Get product by id
-router.get("/:product_id", asyncHandler(productController.findProductById));
 
 // middleware for authentication apply to all routes below
 router.use(authenticationV2);
@@ -45,5 +43,11 @@ router.post(
   "/unpublish/:product_id",
   asyncHandler(productController.unPublishProductByShop)
 );
+
+// Get product by id
+router.get("/:product_id", asyncHandler(productController.findProductById));
+
+// update product
+router.patch("/:product_id", asyncHandler(productController.updateProduct));
 
 module.exports = router;
