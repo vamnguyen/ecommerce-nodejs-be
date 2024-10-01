@@ -18,6 +18,9 @@ const {
   findProduct,
   updateProductById,
 } = require("../models/repositories/product.repository");
+const {
+  insertInventory,
+} = require("../models/repositories/inventory.repository");
 
 class ProductService {
   static productRegistry = {}; // key: value (category: Clothing, Electronics, Furniture,...)
@@ -123,10 +126,14 @@ class Product {
   }
 
   async createProduct(product_id) {
-    const newProduct = await product.create({
-      ...this,
-      _id: product_id,
-    });
+    const newProduct = await product.create({ ...this, _id: product_id });
+    if (newProduct) {
+      await insertInventory({
+        product_id: newProduct._id,
+        shop_id: newProduct.product_shop,
+        quantity: newProduct.product_quantity,
+      });
+    }
 
     return newProduct;
   }
