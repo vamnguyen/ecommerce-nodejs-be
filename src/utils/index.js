@@ -1,21 +1,50 @@
 "use strict";
 
 const _ = require("lodash");
+const { Types } = require("mongoose");
 
+/**
+ * Convert string to ObjectId Mongodb
+ * @param {String} id
+ * @returns {ObjectId}
+ */
+const convertToObjectIdMongodb = (id) => new Types.ObjectId(id);
+
+/**
+ * Get info data from object
+ * @param {Array} field
+ * @param {Object} object
+ * @returns {Object}
+ */
 const getInfoData = ({ field = [], object = {} }) => {
   return _.pick(object, field);
 };
 
-// [ 'name', 'email' ] => { name: 1, email: 1 }
+/**
+ * Get select data from array
+ * @param {Array} select
+ * @example [ 'name', 'email' ] => { name: 1, email: 1 }
+ * @returns {Object}
+ */
 const getSelectData = (select = []) => {
   return Object.fromEntries(select.map((item) => [item, 1]));
 };
 
-// [ 'name', 'email' ] => { name: 0, email: 0 }
+/**
+ * Unselect data from array
+ * @param {Array} select
+ * @example [ 'name', 'email' ] => { name: 0, email: 0 }
+ * @returns {Object}
+ */
 const unSelectData = (select = []) => {
   return Object.fromEntries(select.map((item) => [item, 0]));
 };
 
+/**
+ * Remove null or undefined data from object
+ * @param {Object} object
+ * @returns {Object}
+ */
 const removeUndefinedData = (object) => {
   Object.keys(object).forEach((key) => {
     if (object[key] && typeof object[key] === "object") {
@@ -27,6 +56,12 @@ const removeUndefinedData = (object) => {
   return object;
 };
 
+/**
+ * Update nested object parser
+ * @param {Object} object
+ * @example { a: { b: 1 } } => { 'a.b': 1 }
+ * @returns {Object}
+ */
 const updateNestedObjectParser = (object) => {
   const final = {};
   Object.keys(object || {}).forEach((key) => {
@@ -48,4 +83,5 @@ module.exports = {
   unSelectData,
   removeUndefinedData,
   updateNestedObjectParser,
+  convertToObjectIdMongodb,
 };

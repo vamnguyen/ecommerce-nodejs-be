@@ -22,7 +22,7 @@ const discountSchema = new Schema(
     discount_max_uses: { type: Number, required: true }, // maximum uses
     discount_max_amount: { type: Number, required: true }, // maximum amount
     discount_uses_count: { type: Number, default: 0 }, // how many discount used
-    discount_users_used: { type: Array, default: [] }, // users used
+    discount_users_using: { type: Array, default: [] }, // users used
     discount_max_uses_per_user: { type: Number, default: 1, require: true }, // maximum uses per user
     discount_min_order_amount: { type: Number, default: 0 }, // minimum order amount
     discount_shop_id: { type: Schema.Types.ObjectId, ref: "Shop" }, // shop id

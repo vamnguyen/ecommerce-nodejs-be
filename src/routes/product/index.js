@@ -14,7 +14,7 @@ router.get(
 // Get all products
 router.get("", asyncHandler(productController.findAllProducts));
 
-// middleware for authentication apply to all routes below
+// ----- middleware for authentication apply to all routes below ----- //
 router.use(authenticationV2);
 
 // create a new product
