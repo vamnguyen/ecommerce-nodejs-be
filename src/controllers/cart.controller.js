@@ -1,13 +1,13 @@
 "use strict";
 
 const { SuccessResponse } = require("../core/success.response");
-const CartService = require("../services/cartV2.service");
+const CartService = require("../services/cart.service");
 
 class CartController {
   getCart = async (req, res, next) => {
     new SuccessResponse({
       message: "Cart get successfully",
-      metadata: await CartService.getAllProductsInCart(req.query),
+      metadata: await CartService.getListUserCart(req.query),
     }).send(res);
   };
 
@@ -18,12 +18,12 @@ class CartController {
     }).send(res);
   };
 
-  // updateCart = async (req, res, next) => {
-  //   new SuccessResponse({
-  //     message: "Cart updated successfully",
-  //     metadata: await CartService.updateCart(req.body),
-  //   }).send(res);
-  // };
+  updateCart = async (req, res, next) => {
+    new SuccessResponse({
+      message: "Cart updated successfully",
+      metadata: await CartService.updateCart(req.body),
+    }).send(res);
+  };
 
   deleteCartItem = async (req, res, next) => {
     new SuccessResponse({
