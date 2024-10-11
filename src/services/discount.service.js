@@ -98,6 +98,9 @@ class DiscountService {
     return discounts;
   }
 
+  /**
+   * getDiscountAmount
+   */
   static async calculateDiscountAmount({
     discount_code,
     user_id,
