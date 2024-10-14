@@ -121,6 +121,13 @@ const checkProductByServer = async (products) => {
   );
 };
 
+const checkProductExist = async ({ product_id }) => {
+  const foundProduct = await product.exists({
+    _id: convertToObjectIdMongodb(product_id),
+  });
+  if (!foundProduct) throw new NotFoundError("Product not found");
+};
+
 module.exports = {
   findAllDraftForShop,
   findAllPublishForShop,
@@ -132,4 +139,5 @@ module.exports = {
   updateProductById,
   getProductById,
   checkProductByServer,
+  checkProductExist,
 };
