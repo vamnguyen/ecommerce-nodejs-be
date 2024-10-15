@@ -21,6 +21,7 @@ const {
 const {
   insertInventory,
 } = require("../models/repositories/inventory.repository");
+const NotificationService = require("./notification.service");
 
 class ProductService {
   static productRegistry = {}; // key: value (category: Clothing, Electronics, Furniture,...)
@@ -133,6 +134,19 @@ class Product {
         shop_id: newProduct.product_shop,
         quantity: newProduct.product_quantity,
       });
+
+      // push notification to system
+      NotificationService.pushNotificationToSystem({
+        type: "SHOP-001",
+        receiverId: 1,
+        senderId: this.product_shop,
+        options: {
+          product_name: newProduct.product_name,
+          shop_name: newProduct.product_shop,
+        },
+      })
+        .then((res) => console.log(res))
+        .catch((err) => console.error(err));
     }
 
     return newProduct;
