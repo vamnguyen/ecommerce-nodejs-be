@@ -5,7 +5,8 @@ const { countConnect } = require("../helpers/check.connect");
 const {
   db: { host, port, name },
 } = require("../configs/config.mongodb");
-const connectString = `mongodb://${host}:${port}/${name}`;
+// const connectString = `mongodb://${host}:${port}/${name}`;
+const connectString = `mongodb://localhost:3052/shopDEV`;
 
 // Singleton Pattern
 class Database {
